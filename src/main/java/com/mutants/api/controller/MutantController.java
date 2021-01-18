@@ -1,10 +1,11 @@
 package com.mutants.api.controller;
 
 import com.mutants.api.dto.RequestIsMutant;
+import com.mutants.api.exception.NotMutantException;
 import com.mutants.api.service.MutantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
@@ -21,15 +22,11 @@ public class MutantController {
   }
 
   @PostMapping
-  public Mono<ServerResponse> isMutant(@Valid @RequestBody RequestIsMutant requestIsMutant) {
-    return service
-        .isMutant(requestIsMutant.getDna())
-        .flatMap(
-            aBoolean -> {
-              if (aBoolean) {
-                return ServerResponse.ok().build();
-              }
-              return ServerResponse.status(403).build();
-            });
+  public Mono<Void> isMutant(@Valid @RequestBody RequestIsMutant requestIsMutant) {
+    return service.isMutant(requestIsMutant.getDna()).then();
   }
+
+  @ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "Not Mutant")
+  @ExceptionHandler(NotMutantException.class)
+  public void notMutantExceptionHandler() {}
 }

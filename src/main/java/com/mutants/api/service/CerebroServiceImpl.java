@@ -1,13 +1,14 @@
 package com.mutants.api.service;
 
+import com.mutants.api.util.MatrixUtil;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 @Service
 public class CerebroServiceImpl implements CerebroService {
+
   @Override
-  public Mono<Boolean> isMutant(byte[][] dna) {
-    byte[][] and = transpose(dna);
+  public Boolean isMutant(byte[][] dna) {
+    byte[][] and = MatrixUtil.transpose(dna);
     int ms = 0;
     for (int ri = 0; ri < dna.length; ri++) {
       if (ms > 1) {
@@ -43,17 +44,7 @@ public class CerebroServiceImpl implements CerebroService {
         }
       }
     }
-    return Mono.justOrEmpty(ms > 1);
-  }
-
-  private byte[][] transpose(byte[][] a) {
-    byte[][] transposed = new byte[a.length][a.length];
-    for (int i = 0; i < a.length; i++) {
-      for (int j = 0; j < a.length; j++) {
-        transposed[j][i] = a[i][j];
-      }
-    }
-    return transposed;
+    return ms > 1;
   }
 
   private int checkNext(int x, byte v, byte[] row) {
@@ -97,7 +88,7 @@ public class CerebroServiceImpl implements CerebroService {
       return 0;
     }
     byte[] row = a[xi];
-    if (yi >= row.length) {
+    if (yi < 0) {
       return 0;
     }
     byte vi = row[yi];
