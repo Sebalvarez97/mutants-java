@@ -1,10 +1,11 @@
 package com.mutants.api.controller;
 
-import com.mutants.api.dto.RequestIsMutant;
+import com.mutants.api.dto.IsMutantRequest;
 import com.mutants.api.exception.NotMutantException;
 import com.mutants.api.service.MutantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -22,8 +23,9 @@ public class MutantController {
   }
 
   @PostMapping
-  public Mono<Void> isMutant(@Valid @RequestBody RequestIsMutant requestIsMutant) {
-    return service.isMutant(requestIsMutant.getDna()).then();
+  @PreAuthorize("hasRole('MAGNETO')")
+  public Mono<Void> isMutant(@Valid @RequestBody IsMutantRequest isMutantRequest) {
+    return service.isMutant(isMutantRequest.getDna()).then();
   }
 
   @ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "Not Mutant")

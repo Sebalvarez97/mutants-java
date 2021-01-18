@@ -1,12 +1,12 @@
 package com.mutants.api.dto.validation;
 
-import com.mutants.api.dto.RequestIsMutant;
+import com.mutants.api.dto.IsMutantRequest;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class RequestIsMutantValidator
-    implements ConstraintValidator<ValidRequestIsMutant, RequestIsMutant> {
+    implements ConstraintValidator<ValidRequestIsMutant, IsMutantRequest> {
 
   private static final char[] VALID_CHARS = {'A', 'T', 'C', 'G'};
 
@@ -14,7 +14,7 @@ public class RequestIsMutantValidator
   public void initialize(ValidRequestIsMutant constraintAnnotation) {}
 
   @Override
-  public boolean isValid(RequestIsMutant request, ConstraintValidatorContext context) {
+  public boolean isValid(IsMutantRequest request, ConstraintValidatorContext context) {
     if (request == null) {
       return false;
     }
