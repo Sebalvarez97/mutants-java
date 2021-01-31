@@ -1,5 +1,7 @@
 package com.mutants.api.service;
 
+import reactor.core.publisher.Mono;
+
 public interface CerebroService {
-  Boolean isMutant(byte[][] dna);
+  Mono<Boolean> isMutant(byte[][] dna);
 }

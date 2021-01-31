@@ -2,49 +2,53 @@ package com.mutants.api.service;
 
 import com.mutants.api.util.MatrixUtil;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 public class CerebroServiceImpl implements CerebroService {
 
   @Override
-  public Boolean isMutant(byte[][] dna) {
-    byte[][] and = MatrixUtil.transpose(dna);
-    int ms = 0;
-    for (int ri = 0; ri < dna.length; ri++) {
-      if (ms > 1) {
-        break;
-      }
-      byte[] row1 = dna[ri];
-      byte[] row2 = and[ri];
-      for (int ci = 0; ci < row1.length; ci++) {
-        int result1 = checkNext(ci, row1[ci], row1);
-        if (result1 >= 3) {
-          ms++;
-        }
-        if (ms > 1) {
-          break;
-        }
-        int result2 = checkNext(ci, row2[ci], row2);
-        if (result2 >= 3) {
-          ms++;
-        }
-        if (ms > 1) {
-          break;
-        }
-        int result3 = checkDiagonalUpRight(ri, ci, row1[ci], dna);
-        if (result3 >= 3) {
-          ms++;
-        }
-        if (ms > 1) {
-          break;
-        }
-        int result4 = checkDiagonalDownLeft(ri, ci, row1[ci], dna);
-        if (result4 >= 3) {
-          ms++;
-        }
-      }
-    }
-    return ms > 1;
+  public Mono<Boolean> isMutant(byte[][] dna) {
+    return Mono.fromCallable(
+        () -> {
+          byte[][] and = MatrixUtil.transpose(dna);
+          int ms = 0;
+          for (int ri = 0; ri < dna.length; ri++) {
+            if (ms > 1) {
+              break;
+            }
+            byte[] row1 = dna[ri];
+            byte[] row2 = and[ri];
+            for (int ci = 0; ci < row1.length; ci++) {
+              int result1 = checkNext(ci, row1[ci], row1);
+              if (result1 >= 3) {
+                ms++;
+              }
+              if (ms > 1) {
+                break;
+              }
+              int result2 = checkNext(ci, row2[ci], row2);
+              if (result2 >= 3) {
+                ms++;
+              }
+              if (ms > 1) {
+                break;
+              }
+              int result3 = checkDiagonalUpRight(ri, ci, row1[ci], dna);
+              if (result3 >= 3) {
+                ms++;
+              }
+              if (ms > 1) {
+                break;
+              }
+              int result4 = checkDiagonalDownLeft(ri, ci, row1[ci], dna);
+              if (result4 >= 3) {
+                ms++;
+              }
+            }
+          }
+          return ms > 1;
+        });
   }
 
   private int checkNext(int x, byte v, byte[] row) {
