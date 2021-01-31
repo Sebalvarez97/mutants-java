@@ -57,12 +57,8 @@ public class MutantServiceImpl implements MutantService {
             objects -> {
               int m = objects.getT2();
               int h = objects.getT1() - objects.getT2();
-
-              return Stats.builder()
-                  .countMutantDna(m)
-                  .countHumanDna(h)
-                  .ratio(h != 0 ? (double) m / (double) h : 1)
-                  .build();
+              double r = h != 0 ? Math.round((double) m / (double) h * 100.0) / 100.0 : 1;
+              return Stats.builder().countMutantDna(m).countHumanDna(h).ratio(r).build();
             });
   }
 }
