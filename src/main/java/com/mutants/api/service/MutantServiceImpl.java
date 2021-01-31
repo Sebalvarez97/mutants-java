@@ -1,12 +1,15 @@
 package com.mutants.api.service;
 
 import com.mutants.api.domain.mongo.DnaMongo;
+import com.mutants.api.dto.Stats;
 import com.mutants.api.exception.NotMutantException;
 import com.mutants.api.repository.DnaMongoRepository;
 import com.mutants.api.util.MatrixUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static com.mutants.api.util.MatrixUtil.stringNxNMatrixToByteArray;
 
@@ -42,6 +45,24 @@ public class MutantServiceImpl implements MutantService {
                 return Mono.error(new NotMutantException());
               }
               return Mono.just(true);
+            });
+  }
+
+  @Override
+  public Mono<Stats> getStats() {
+    return Mono.zip(
+            dnaMongoRepository.findAll().collectList().map(List::size),
+            dnaMongoRepository.findAllByMutantIs(true).collectList().map(List::size))
+        .map(
+            objects -> {
+              int m = objects.getT2();
+              int h = objects.getT1() - objects.getT2();
+
+              return Stats.builder()
+                  .countMutantDna(m)
+                  .countHumanDna(h)
+                  .ratio(h != 0 ? (double) (m / h) : 1)
+                  .build();
             });
   }
 }

@@ -1,6 +1,7 @@
 package com.mutants.api.controller;
 
 import com.mutants.api.dto.IsMutantRequest;
+import com.mutants.api.dto.Stats;
 import com.mutants.api.exception.NotMutantException;
 import com.mutants.api.service.MutantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,12 @@ public class MutantController {
   @PreAuthorize("hasRole('MAGNETO')")
   public Mono<Void> isMutant(@Valid @RequestBody IsMutantRequest isMutantRequest) {
     return service.isMutant(isMutantRequest.getDna()).then();
+  }
+
+  @GetMapping("/stats")
+  @PreAuthorize("hasRole('MAGNETO')")
+  public Mono<Stats> getStats() {
+    return service.getStats();
   }
 
   @ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "Not Mutant")
