@@ -9,7 +9,7 @@ As this is a kubernetes solution, it could be deployed in any other kubernetes e
 
 It is a scalable solution, this means that can perform well in low or big load.
 
-The public IP tu consume the API is http://104.197.202.46/
+The public IP tu consume the API is http://35.202.245.250/
 
 ## Docs
 The description of the kubernetes architecture is in /docs/arch.
