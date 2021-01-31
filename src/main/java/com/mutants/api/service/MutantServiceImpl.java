@@ -61,7 +61,7 @@ public class MutantServiceImpl implements MutantService {
               return Stats.builder()
                   .countMutantDna(m)
                   .countHumanDna(h)
-                  .ratio(h != 0 ? (double) (m / h) : 1)
+                  .ratio(h != 0 ? (double) m / (double) h : 1)
                   .build();
             });
   }
