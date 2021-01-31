@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mutants-java-api
+  name: mutants-java-api
+  namespace: mutants
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mutants-java-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: mutants-java-api
+    spec:
+      containers:
+        - env:
+            - name: SPRING_DATA_MONGO_URI
+              valueFrom:
+                configMapKeyRef:
+                  key: SPRING_DATA_MONGO_URI
+                  name: mutants-java-api-config-mw4n
+          image: gcr.io/mutants-299814/github.com/sebalvarez97/mutants-java
+          imagePullPolicy: IfNotPresent
+          name: mutants-java-1
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: mutants-java-api
+  name: mutants-java-api-hpa-jc5e
+  namespace: mutants
+spec:
+  maxReplicas: 5
+  metrics:
+    - resource:
+        name: cpu
+        targetAverageUtilization: 80
+      type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mutants-java-api
