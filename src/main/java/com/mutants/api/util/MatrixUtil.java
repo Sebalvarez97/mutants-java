@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class MatrixUtil {
 
-  protected static final String HASH_ALGORITHM = "SHA-256";
+  protected static final String HASH_ALGORITHM = "SHA-1";
 
   /**
    * Transpose a NxN byte matrix.
